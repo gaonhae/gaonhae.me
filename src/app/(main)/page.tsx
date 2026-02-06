@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Routine Widget */}
       <section className="w-full border-t border-border bg-muted/30 py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-4xl mx-auto">
             <Suspense
               fallback={
                 <div className="bg-card border border-border rounded-lg p-6 animate-pulse">
