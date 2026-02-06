@@ -6,11 +6,22 @@ import { ProjectCard } from "@/components/projects/ProjectCard";
 export async function RecentActivity() {
   // Get recent blog posts (MDX)
   const allPosts = getAllMDXContent("blog").filter((p) => p.frontMatter.published);
-  const recentPosts = allPosts.slice(0, 2);
+  const recentPosts = allPosts.slice(0, 3);
 
-  // Get recent project
+  // Get recent projects and merge with MDX frontmatter
   const projects = await getProjects();
-  const recentProject = projects[0];
+  const projectsMDX = getAllMDXContent("projects");
+
+  // Merge thumbnail from MDX if not set in database, or use placeholder
+  const projectsWithThumbnails = projects.map((project) => {
+    const mdx = projectsMDX.find((p) => p.slug === project.slug);
+    return {
+      ...project,
+      thumbnail: project.thumbnail || mdx?.frontMatter?.thumbnail || '/images/thumbnailPlaceholder.png',
+    };
+  });
+
+  const recentProjects = projectsWithThumbnails.slice(0, 3);
 
   return (
     <section className="w-full max-w-[1200px] mx-auto px-6 py-20 border-t border-border">
@@ -28,7 +39,7 @@ export async function RecentActivity() {
         <div>
           <h3 className="text-xl font-semibold mb-6">최근 블로그 포스트</h3>
           {recentPosts.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {recentPosts.map((post) => (
                 <PostCard
                   key={post.slug}
@@ -42,12 +53,14 @@ export async function RecentActivity() {
           )}
         </div>
 
-        {/* Recent Project */}
+        {/* Recent Projects */}
         <div>
           <h3 className="text-xl font-semibold mb-6">최근 프로젝트</h3>
-          {recentProject ? (
-            <div className="max-w-md">
-              <ProjectCard project={recentProject} />
+          {recentProjects.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {recentProjects.map((project) => (
+                <ProjectCard key={project.slug} project={project} />
+              ))}
             </div>
           ) : (
             <p className="text-muted-foreground">아직 등록된 프로젝트가 없습니다.</p>

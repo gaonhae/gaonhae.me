@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Github, ExternalLink } from "lucide-react";
@@ -9,12 +10,22 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const { slug, name, description, tech_stack, github_url, live_url } = project;
+  const { slug, name, description, tech_stack, github_url, live_url, thumbnail } = project;
 
   return (
-    <Card className="h-full flex flex-col transition-all hover:shadow-lg hover:scale-[1.02]">
+    <Card className="h-full flex flex-col transition-all hover:shadow-lg hover:scale-[1.02] pt-0">
+      <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-lg border-b-3 border-gray-100">
+        <Image
+          src={thumbnail || '/images/thumbnailPlaceholder.png'}
+          alt={`${name} thumbnail`}
+          fill
+          className="object-cover object-center"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          unoptimized
+        />
+      </div>
       <CardHeader>
-        <CardTitle className="text-2xl">{name}</CardTitle>
+        <CardTitle className="text-2xl ">{name}</CardTitle>
         {description && (
           <CardDescription className="line-clamp-2">{description}</CardDescription>
         )}

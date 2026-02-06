@@ -58,7 +58,7 @@ export async function RoutineWidget() {
   return (
     <Card>
       <CardHeader className="gap-0">
-        <CardTitle className="text-lg">My Routinary Life</CardTitle>
+        <CardTitle className="text-xl">My Routinary Life</CardTitle>
         <CardDescription className="pb-10 border-b-3 border-gray-100">Today : {format(new Date(), "yyyy-MM-dd (EEE)")}</CardDescription>
       </CardHeader>
       <CardContent>
