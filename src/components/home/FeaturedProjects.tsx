@@ -1,24 +1,25 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 const projects = [
   {
-    title: "Habit Tracker",
-    description: "일상의 습관을 추적하고 데이터를 시각화하는 미니멀 습관 관리 앱",
-    tech: "React, Next.js, Supabase",
-    image: "bg-gradient-to-br from-blue-500/20 to-purple-500/20",
+    title: "Life is short",
+    description: "부모님의 옛 사진을 통해 부모님의 젊은 시절을 영상으로 볼 수 있는 서비스",
+    tech: "처음으로 도전한 사업,",
+    image: "/images/projects/lifeisshort_mockup.png",
   },
   {
-    title: "개인 블로그",
-    description: "MDX 기반의 기술 블로그로 개발 여정과 학습 내용을 기록합니다",
-    tech: "Next.js, MDX, Tailwind",
-    image: "bg-gradient-to-br from-green-500/20 to-teal-500/20",
+    title: "24살인데 대학교 1학년?",
+    description: "4년을 내내 달고 살던 학벌에 대한 미련. 그리고 끝내 모두 털어내버린 분투의 과정",
+    tech: "저도 제가 이렇게까지 버틸 수 있을 줄 몰랐죠",
+    image: "/images/projects/certification.jpg",
   },
   {
-    title: "포트폴리오 플랫폼",
-    description: "프로젝트, 블로그, 습관 관리를 통합한 개인 브랜드 플랫폼",
-    tech: "Next.js, TypeScript",
-    image: "bg-gradient-to-br from-primary/20 to-yellow-500/20",
+    title: "TOEIC 3주, 930점",
+    description: "갑작스러운 끌림에 도전했던 토익. 이렇게 잘 나올 줄 알았으면 진작 할 걸",
+    tech: "언어 시험에는 다소 강한 편",
+    image: "/images/projects/toeic.png",
   },
 ];
 
@@ -49,18 +50,20 @@ export function FeaturedProjects() {
               key={index}
               className="group flex flex-col bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border"
             >
-              <div
-                className={`w-full aspect-[4/3] ${project.image} transition-transform duration-500 group-hover:scale-105 flex items-center justify-center backdrop-blur-sm`}
-              >
-                <div className="text-6xl font-black text-foreground/10">
-                  {index + 1}
-                </div>
+              <div className="w-full aspect-[4/3] relative overflow-hidden bg-muted">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
               </div>
               <div className="p-6 flex flex-col gap-2">
                 <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">
                   {project.tech}
                 </p>
-                <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
                   {project.title}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
