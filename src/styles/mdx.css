@@ -1,0 +1,93 @@
+/* MDX Content Styles */
+
+.mdx-content {
+  @apply text-foreground;
+}
+
+/* Code Highlighting (using highlight.js default theme) */
+.mdx-content pre code.hljs {
+  @apply block overflow-x-auto p-4 rounded-lg;
+}
+
+.mdx-content code.hljs {
+  @apply p-1;
+}
+
+/* KaTeX Math Rendering */
+.mdx-content .katex {
+  @apply text-foreground;
+}
+
+.mdx-content .katex-display {
+  @apply my-6 overflow-x-auto;
+}
+
+/* Obsidian-style internal links */
+.mdx-content a[href^="/"]:not([href^="//"]) {
+  @apply text-primary underline decoration-primary/30 hover:decoration-primary transition-colors;
+}
+
+/* Light theme code highlighting */
+:root {
+  --hljs-background: hsl(0 0% 96%);
+  --hljs-foreground: hsl(0 0% 20%);
+  --hljs-comment: hsl(0 0% 50%);
+  --hljs-keyword: hsl(262 90% 50%);
+  --hljs-string: hsl(122 40% 40%);
+  --hljs-function: hsl(221 87% 60%);
+  --hljs-number: hsl(35 99% 36%);
+}
+
+.hljs {
+  background: var(--hljs-background);
+  color: var(--hljs-foreground);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--hljs-comment);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: var(--hljs-keyword);
+  font-weight: 600;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type {
+  color: var(--hljs-string);
+}
+
+.hljs-function,
+.hljs-tag,
+.hljs-name {
+  color: var(--hljs-function);
+  font-weight: 600;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-meta {
+  color: var(--hljs-number);
+}
+
+/* Dark theme code highlighting */
+.dark {
+  --hljs-background: hsl(0 0% 15%);
+  --hljs-foreground: hsl(0 0% 90%);
+  --hljs-comment: hsl(0 0% 60%);
+  --hljs-keyword: hsl(262 90% 70%);
+  --hljs-string: hsl(122 40% 60%);
+  --hljs-function: hsl(221 87% 70%);
+  --hljs-number: hsl(35 99% 60%);
+}

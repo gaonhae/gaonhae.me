@@ -1,0 +1,98 @@
+---
+title: "gaonhae.me - 개인 브랜드 플랫폼"
+date: "2024-02-06"
+description: "기획-개발-운영-자기관리가 통합된 성장형 메이커의 플랫폼"
+tech_stack: ["Next.js 14", "TypeScript", "Tailwind CSS", "Supabase", "MDX", "Recharts"]
+github_url: "https://github.com/gaonhae/gaonhae.me"
+live_url: "https://gaonhae.me"
+thumbnail: "/images/projects/gaonhae-portfolio.png"
+---
+
+# gaonhae.me 프로젝트
+
+## 프로젝트 개요
+
+**gaonhae.me**는 단순 포트폴리오를 넘어, 개발 프로젝트부터 자기관리까지 모든 과정을 기록하고 공유하는 개인 브랜드 플랫폼입니다.
+
+### 핵심 가치
+
+> 기획-개발-운영-자기관리가 통합된 성장형 메이커로서의 정체성을 증명하는 플랫폼
+
+## 주요 기능
+
+### 1. 포트폴리오 섹션
+- 프로젝트 카드 그리드
+- MDX 기반 프로젝트 상세 페이지
+- 기술 스택 태그
+- GitHub 및 Live URL 링크
+
+### 2. 기술 블로그
+- MDX 렌더링 (코드 하이라이팅, LaTeX 수식)
+- 카테고리 분류 (Dev, Product, Life)
+- 태그 기반 필터링
+- SEO 최적화
+
+### 3. 자기관리 대시보드
+- 깃허브 잔디 스타일 습관 시각화
+- Recharts 기반 진척도 차트
+- 일일 루틴 위젯
+
+## 기술 아키텍처
+
+```typescript
+// 기술 스택 구성
+const architecture = {
+  frontend: {
+    framework: "Next.js 14 (App Router)",
+    styling: "Tailwind CSS v4",
+    components: "Shadcn UI",
+    icons: "Lucide React"
+  },
+  backend: {
+    database: "Supabase (PostgreSQL)",
+    auth: "Supabase Auth",
+    storage: "Supabase Storage"
+  },
+  content: {
+    format: "MDX",
+    highlighting: "rehype-highlight",
+    math: "KaTeX"
+  },
+  visualization: {
+    charts: "Recharts",
+    dates: "date-fns"
+  }
+};
+```
+
+## 개발 과정
+
+### 1단계: 기본 레이아웃 구성
+- Next.js 프로젝트 초기화
+- Tailwind CSS 커스터마이징
+- MDX 블로그 시스템 구축
+
+### 2단계: Supabase 연동
+- 데이터베이스 스키마 설계
+- Server Actions 구현
+- 실시간 데이터 페칭
+
+### 3단계: 시각화 및 디자인
+- 습관 트래커 그리드
+- 차트 컴포넌트
+- 다크모드 구현
+
+## 배운 점
+
+1. **Next.js App Router** - 서버 컴포넌트와 클라이언트 컴포넌트의 적절한 분리
+2. **Supabase** - PostgreSQL의 강력한 기능을 활용한 데이터 모델링
+3. **MDX** - 콘텐츠와 코드의 결합으로 동적인 문서 작성
+4. **Tailwind v4** - CSS 변수 기반의 새로운 설정 방식
+
+## 향후 계획
+
+- [ ] 관리자 인증 시스템
+- [ ] 블로그 에디터 대시보드
+- [ ] 댓글 시스템 (giscus)
+- [ ] 검색 기능 (Algolia)
+- [ ] RSS 피드 생성

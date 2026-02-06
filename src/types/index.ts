@@ -1,0 +1,15 @@
+import { Database } from "./database.types";
+
+export type Tables<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
+
+export type Inserts<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Insert"];
+
+export type Updates<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Update"];
+
+export type Profile = Tables<"profiles">;
+export type Post = Tables<"posts">;
+export type Project = Tables<"projects">;
+export type Habit = Tables<"habits">;
