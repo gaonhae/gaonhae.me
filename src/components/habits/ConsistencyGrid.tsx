@@ -54,7 +54,7 @@ export function ConsistencyGrid({ data, weeks = 15 }: ConsistencyGridProps) {
         {/* Day labels */}
         <div className="flex mb-2 gap-2">
           {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
-            <div key={i} className="w-18 h-9 text-ㅣㅎ text-muted-foreground text-center flex items-center justify-center">
+            <div key={i} className="w-[54px] h-9 text-md text-muted-foreground text-center flex items-center justify-center">
               {day}
             </div>
           ))}
@@ -71,7 +71,7 @@ export function ConsistencyGrid({ data, weeks = 15 }: ConsistencyGridProps) {
                 return (
                   <div
                     key={`${weekIndex}-${dayIndex}`}
-                    className={`w-18 h-[54px] rounded-sm transition-all cursor-pointer ${
+                    className={`w-[54px] h-[54px] rounded-sm transition-all cursor-pointer ${
                       isFuture
                         ? "bg-muted/30 opacity-30"
                         : getColorClass(cell.count)
