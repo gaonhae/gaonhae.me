@@ -1,59 +1,55 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="container mx-auto px-4 py-20 md:py-32">
-      <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-            안녕하세요,{" "}
-            <span className="text-primary">가온해</span>입니다
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground">
-            기획-개발-운영-자기관리를 통합하는
-          </p>
-          <p className="text-2xl md:text-3xl font-semibold text-foreground">
-            성장형 메이커 (Growing Maker)
-          </p>
+    <section className="w-full max-w-[1200px] mx-auto px-6 py-16 lg:py-24">
+      <div className="flex flex-col gap-12 lg:flex-row lg:items-center">
+        {/* Left: Text Content */}
+        <div className="flex flex-col gap-8 flex-1">
+          <div className="flex flex-col gap-4 text-left">
+            <h1 className="text-4xl font-bold  tracking-wide lg:text-7xl mb-3">
+              Nice to meet u, <br /> I am <span className="text-primary">Gaonhae</span>
+            </h1>
+            <p className="text-muted-foreground mb-10 text-lg lg:text-xl font-normal leading-relaxed max-w-[600px]">
+              만나서 반갑습니다. 깊이 있는 사고를 하는 김태양입니다.
+              <br />제가 불태운, 불태우는, 불태울 청춘을 이곳에서 보여드리겠습니다.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-4">
+            <Link href="/projects">
+              <Button
+                size="lg"
+                className="min-w-[160px] h-14 rounded-xl text-base font-bold tracking-wide hover:shadow-lg transition-all"
+              >
+                run Projects()
+              </Button>
+            </Link>
+            <Link href="/blog">
+              <Button
+                size="lg"
+                variant="outline"
+                className="min-w-[160px] h-14 rounded-xl text-base font-bold tracking-wide bg-primary/10 text-primary border-0 hover:bg-primary/20 transition-all"
+              >
+                run Blogs()
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        <p className="text-lg text-muted-foreground max-w-2xl">
-          단순 포트폴리오를 넘어, 개발 프로젝트부터 자기관리까지 모든 과정을 기록하고 공유하는
-          개인 브랜드 플랫폼입니다. 배움과 성장의 여정을 함께 나누고 싶습니다.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          <Link href="/projects">
-            <Button size="lg" className="w-full sm:w-auto">
-              프로젝트 보기
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-          <Link href="/blog">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              블로그 읽기
-            </Button>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 w-full">
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-primary">4+</div>
-            <div className="text-sm text-muted-foreground">프로젝트</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-primary">20+</div>
-            <div className="text-sm text-muted-foreground">블로그 포스트</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-primary">365</div>
-            <div className="text-sm text-muted-foreground">일일 루틴</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-primary">100%</div>
-            <div className="text-sm text-muted-foreground">성장 열정</div>
+        {/* Right: Image */}
+        <div className="w-full max-w-[285px] lg:max-w-none lg:flex-[0.75]">
+          <div className="aspect-3/4 rounded-[2rem] shadow-2xl overflow-hidden relative border border-primary/20">
+            <Image
+              src="/profile.jpg"
+              alt="김태양 프로필 사진"
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* <div className="absolute inset-0 bg-primary/10 mix-blend-multiply" /> */}
           </div>
         </div>
       </div>

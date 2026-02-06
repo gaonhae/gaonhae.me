@@ -20,7 +20,7 @@ export function Navigation() {
   return (
     <nav className="flex items-center">
       {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center space-x-6">
+      <div className="hidden md:flex items-center gap-8">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -29,8 +29,8 @@ export function Navigation() {
               href={item.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 isActive
-                  ? "text-primary"
-                  : "text-muted-foreground"
+                  ? "text-foreground"
+                  : "text-foreground"
               }`}
             >
               {item.label}
