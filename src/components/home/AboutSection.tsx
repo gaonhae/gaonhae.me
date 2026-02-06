@@ -8,13 +8,14 @@ export function AboutSection() {
   return (
     <section className="w-full max-w-[1200px] px-6 py-24 flex flex-col items-center text-center">
       <div className="max-w-[800px] space-y-8">
-        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
-          About Me
+        <h2 className="text-3xl lg:text-5xl font-bold tracking-tight mb-20">
+          Welcome to my own stage!
         </h2>
         <p className="text-muted-foreground text-xl font-light leading-relaxed">
-          단순 포트폴리오를 넘어, 개발 프로젝트부터 자기관리까지 모든 과정을 기록하고 공유하는
-          개인 브랜드 플랫폼입니다. &quot;성장형 메이커&quot;로서 배움과 성장의 여정을 함께 나누며,
-          깔끔하고 유지보수 가능한 코드로 실질적인 문제를 해결하는 것을 추구합니다.
+          이 페이지는 단순히 제 경제적 쓸모를 증명하기 위한 것이 아닙니다.  <br />
+          잠에 들어서마저 멈출 줄 모르는 제 생각들이 온전히 담긴 그릇입니다. <br />
+          저는 여러분들에게 제 철학을 말하고, 여러분들은 꾸밈없는 저를 보게 되는 것입니다. <br />
+          모를 일이지만, 아마 꽤 흥미로울 겁니다.
         </p>
 
         <div className="flex flex-wrap justify-center gap-10 pt-4">

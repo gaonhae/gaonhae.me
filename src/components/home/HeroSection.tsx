@@ -24,7 +24,7 @@ export function HeroSection() {
                 size="lg"
                 className="min-w-[160px] h-14 rounded-xl text-base font-bold tracking-wide hover:shadow-lg transition-all"
               >
-                run Projects()
+                run GetProjects()
               </Button>
             </Link>
             <Link href="/blog">
@@ -33,7 +33,7 @@ export function HeroSection() {
                 variant="outline"
                 className="min-w-[160px] h-14 rounded-xl text-base font-bold tracking-wide bg-primary/10 text-primary border-0 hover:bg-primary/20 transition-all"
               >
-                run Blogs()
+                run GetBlogs()
               </Button>
             </Link>
           </div>
