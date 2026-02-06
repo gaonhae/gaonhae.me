@@ -9,9 +9,9 @@ export function Header() {
       <div className="container mx-auto px-6 lg:px-10 flex h-16 items-center justify-between max-w-[1200px]">
         <Link href="/" className="flex items-center gap-2 text-primary">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-white font-bold text-sm">G</span>
+            <span className="text-white font-bold text-sm"></span>
           </div>
-          <span className="text-xl font-bold hidden sm:inline">gaonhae.me</span>
+          <span className="text-xl font-bold hidden sm:inline">Gaonhae</span>
         </Link>
 
         <div className="flex items-center gap-6 lg:gap-10">

@@ -13,7 +13,7 @@ export function HeroSection() {
               Nice to meet u, <br /> I am <span className="text-primary">Gaonhae</span>
             </h1>
             <p className="text-muted-foreground mb-10 text-lg lg:text-xl font-normal leading-relaxed max-w-[600px]">
-              만나서 반갑습니다. 깊이 있는 사고를 하는 김태양입니다.
+              만나서 반갑습니다. 깊이 있는 사고를 하는 개발자 김태양입니다.
               <br />제가 불태운, 불태우는, 불태울 청춘을 이곳에서 보여드리겠습니다.
             </p>
           </div>
