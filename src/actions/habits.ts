@@ -200,17 +200,33 @@ export async function getTotalCompletedHabits(): Promise<number> {
 function calculateStreak(habits: { date: string; status: boolean }[]): number {
   const today = format(new Date(), "yyyy-MM-dd");
 
-  // If no data or today not completed, streak is 0
-  if (!habits.length || habits[0].date !== today || !habits[0].status) {
-    return 0;
-  }
+  if (!habits.length) return 0;
 
-  // Count consecutive days
   let streak = 0;
   let expectedDate = new Date(today);
 
+  // Determine starting point
+  if (habits[0].date === today) {
+    if (habits[0].status) {
+      // Today completed - count it and continue
+      streak = 1;
+      expectedDate = subDays(expectedDate, 1);
+    } else {
+      // Today not completed - start counting from yesterday
+      expectedDate = subDays(expectedDate, 1);
+    }
+  } else {
+    // Today's data doesn't exist - start counting from yesterday
+    expectedDate = subDays(expectedDate, 1);
+  }
+
+  // Count consecutive days from yesterday backwards
   for (const habit of habits) {
     const habitDate = habit.date;
+
+    // Skip today if we already processed it
+    if (habitDate === today) continue;
+
     const expectedDateStr = format(expectedDate, "yyyy-MM-dd");
 
     if (habitDate === expectedDateStr && habit.status) {

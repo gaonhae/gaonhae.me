@@ -13,7 +13,7 @@ export function HabitCard({ habitName, date, initialStatus, icon, streak }: Habi
   return (
     <Card className="relative overflow-hidden transition-all hover:shadow-md">
       {/* Streak Badge */}
-      {streak !== undefined && streak > 0 && (
+      {streak !== undefined && (
         <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">
           <span>🔥</span>
           <span>{streak} Days</span>
