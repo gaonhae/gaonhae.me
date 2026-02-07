@@ -1,5 +1,6 @@
-import { getAllMDXContent } from "@/lib/mdx/mdx-utils";
+import { getAllMDXContent, getMDXContentByCategory } from "@/lib/mdx/mdx-utils";
 import { PostCard } from "@/components/blog/PostCard";
+import { CategoryFilter } from "@/components/blog/CategoryFilter";
 
 export const metadata = {
   title: "Blog - gaonhae.me",
@@ -8,10 +9,22 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function BlogPage() {
-  const posts = getAllMDXContent("blog").filter((post) => post.frontMatter.published);
+interface BlogPageProps {
+  searchParams: Promise<{ category?: string }>;
+}
 
-  const categories = ["All", "Dev", "Product", "Life"];
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const params = await searchParams;
+  const category = params?.category;
+
+  let posts;
+  if (category && category !== "All") {
+    posts = getMDXContentByCategory("blog", category);
+  } else {
+    posts = getAllMDXContent("blog");
+  }
+
+  const filteredPosts = posts.filter((post) => post.frontMatter.published);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -23,29 +36,19 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Category Filter - Will be enhanced later with client component */}
-        <div className="flex gap-2 mb-8">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                category === "All"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+        <CategoryFilter />
 
-        {posts.length === 0 ? (
+        {filteredPosts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">아직 작성된 포스트가 없습니다.</p>
+            <p className="text-muted-foreground">
+              {category && category !== "All"
+                ? `"${category}" 카테고리에 포스트가 없습니다.`
+                : "아직 작성된 포스트가 없습니다."}
+            </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
               <PostCard
                 key={post.slug}
                 slug={post.slug}
