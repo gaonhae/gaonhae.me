@@ -1,4 +1,4 @@
-import { getHabitsByDate, getTotalCompletedHabits } from "@/actions/habits";
+import { getHabitsByDate, getTotalCompletedHabits, getAllHabitStreaks, getLongestStreakOverall } from "@/actions/habits";
 import { HabitCard } from "@/components/habits/HabitCard";
 import { format } from "date-fns";
 import { Dumbbell, BookOpen, Code, Brain } from "lucide-react";
@@ -25,6 +25,12 @@ export default async function HabitsPage() {
 
   // Create habit map
   const habitMap = new Map(habits.map((h) => [h.habit_name, h.status]));
+
+  // Fetch streak data for all habits
+  const streaks = await getAllHabitStreaks(["운동", "독서", "코딩", "명상"]);
+
+  // Fetch longest streak across all habits
+  const longestStreak = await getLongestStreakOverall();
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -59,6 +65,7 @@ export default async function HabitsPage() {
                   date={today}
                   initialStatus={habitMap.get(habit.name) || false}
                   icon={habit.icon}
+                  streak={streaks[habit.name]}
                 />
               ))}
             </div>
@@ -74,7 +81,7 @@ export default async function HabitsPage() {
                 </div>
                 <div className="text-sm text-muted-foreground">오늘 완료</div>
               </div>
-             
+
               <div className="bg-card border border-border rounded-lg p-4">
                 <div className="text-2xl font-bold text-primary">
                   {Math.round(
@@ -84,9 +91,17 @@ export default async function HabitsPage() {
                 </div>
                 <div className="text-sm text-muted-foreground">달성률</div>
               </div>
+
               <div className="bg-card border border-border rounded-lg p-4">
                 <div className="text-2xl font-bold text-primary">{totalCompleted}</div>
                 <div className="text-sm text-muted-foreground">총 실천 습관</div>
+              </div>
+
+              <div className="bg-card border border-border rounded-lg p-4">
+                <div className="text-2xl font-bold text-primary">
+                  {longestStreak}일
+                </div>
+                <div className="text-sm text-muted-foreground">최장 스트릭</div>
               </div>
             </div>
           </section>

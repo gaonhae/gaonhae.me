@@ -6,11 +6,20 @@ interface HabitCardProps {
   date: string;
   initialStatus: boolean;
   icon: React.ReactNode;
+  streak?: number;
 }
 
-export function HabitCard({ habitName, date, initialStatus, icon }: HabitCardProps) {
+export function HabitCard({ habitName, date, initialStatus, icon, streak }: HabitCardProps) {
   return (
-    <Card className="transition-all hover:shadow-md">
+    <Card className="relative overflow-hidden transition-all hover:shadow-md">
+      {/* Streak Badge */}
+      {streak !== undefined && streak > 0 && (
+        <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">
+          <span>🔥</span>
+          <span>{streak} Days</span>
+        </div>
+      )}
+
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-4">
           <div className="relative w-16 h-16 flex-shrink-0">

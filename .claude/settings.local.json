@@ -11,7 +11,8 @@
       "Bash(timeout /t 5 /nobreak)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "WebSearch"
     ]
   }
 }

@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
+import { format, subDays } from "date-fns";
 import type { Habit, Inserts, Updates } from "@/types";
 
 export async function getHabits(startDate?: string, endDate?: string) {
@@ -192,4 +194,131 @@ export async function getTotalCompletedHabits(): Promise<number> {
   }
 
   return count || 0;
+}
+
+// Helper function to calculate streak from habit data
+function calculateStreak(habits: { date: string; status: boolean }[]): number {
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  // If no data or today not completed, streak is 0
+  if (!habits.length || habits[0].date !== today || !habits[0].status) {
+    return 0;
+  }
+
+  // Count consecutive days
+  let streak = 0;
+  let expectedDate = new Date(today);
+
+  for (const habit of habits) {
+    const habitDate = habit.date;
+    const expectedDateStr = format(expectedDate, "yyyy-MM-dd");
+
+    if (habitDate === expectedDateStr && habit.status) {
+      streak++;
+      expectedDate = subDays(expectedDate, 1);
+    } else if (habitDate < expectedDateStr) {
+      // Gap found - stop counting
+      break;
+    }
+  }
+
+  return streak;
+}
+
+// Get streak for a single habit (with React cache for request-level deduplication)
+export const getHabitStreak = cache(async (habitName: string): Promise<number> => {
+  const supabase = await createClient();
+  const today = format(new Date(), "yyyy-MM-dd");
+  const startDate = format(subDays(new Date(), 180), "yyyy-MM-dd");
+
+  const { data, error } = await supabase
+    .from("habits")
+    .select("date, status")
+    .eq("habit_name", habitName)
+    .gte("date", startDate)
+    .lte("date", today)
+    .order("date", { ascending: false });
+
+  if (error || !data) return 0;
+  return calculateStreak(data);
+});
+
+// Get streaks for multiple habits
+export async function getAllHabitStreaks(
+  habitNames: string[]
+): Promise<Record<string, number>> {
+  const streaks = await Promise.all(
+    habitNames.map(async (name) => ({
+      name,
+      streak: await getHabitStreak(name),
+    }))
+  );
+
+  return Object.fromEntries(streaks.map((s) => [s.name, s.streak]));
+}
+
+// Helper function to calculate longest streak from habit data
+function calculateLongestStreak(habits: { date: string; status: boolean }[]): number {
+  if (!habits.length) return 0;
+
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let previousDate: Date | null = null;
+
+  // Reverse to process oldest → newest
+  const sortedHabits = [...habits].reverse();
+
+  for (const habit of sortedHabits) {
+    if (!habit.status) {
+      currentStreak = 0;
+      previousDate = null;
+      continue;
+    }
+
+    const currentDate = new Date(habit.date);
+
+    if (previousDate === null) {
+      currentStreak = 1;
+    } else {
+      const daysDiff = Math.floor(
+        (currentDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysDiff === 1) {
+        currentStreak++;
+      } else {
+        currentStreak = 1;
+      }
+    }
+
+    maxStreak = Math.max(maxStreak, currentStreak);
+    previousDate = currentDate;
+  }
+
+  return maxStreak;
+}
+
+// Get longest streak for a single habit (with React cache for request-level deduplication)
+export const getLongestHabitStreak = cache(async (habitName: string): Promise<number> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("habits")
+    .select("date, status")
+    .eq("habit_name", habitName)
+    .order("date", { ascending: false });
+
+  if (error || !data) return 0;
+  return calculateLongestStreak(data);
+});
+
+// Get longest streak across all habits
+export async function getLongestStreakOverall(): Promise<number> {
+  const habitNames = ["운동", "독서", "코딩", "명상"];
+
+  const streaks = await Promise.all(
+    habitNames.map(name => getLongestHabitStreak(name))
+  );
+
+  return Math.max(...streaks, 0);
 }
