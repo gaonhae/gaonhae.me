@@ -176,3 +176,20 @@ export async function getHabitStats(habitName: string, days: number = 30) {
 
   return { total, completed, rate };
 }
+
+// Get total number of completed habits (status=true) across all time
+export async function getTotalCompletedHabits(): Promise<number> {
+  const supabase = await createClient();
+
+  const { count, error } = await supabase
+    .from("habits")
+    .select("*", { count: "exact", head: true })
+    .eq("status", true);
+
+  if (error) {
+    console.error("Error fetching total completed habits:", error);
+    return 0;
+  }
+
+  return count || 0;
+}

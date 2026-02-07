@@ -1,4 +1,4 @@
-import { getHabitsByDate } from "@/actions/habits";
+import { getHabitsByDate, getTotalCompletedHabits } from "@/actions/habits";
 import { HabitCard } from "@/components/habits/HabitCard";
 import { format } from "date-fns";
 import { Dumbbell, BookOpen, Code, Brain } from "lucide-react";
@@ -13,6 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function HabitsPage() {
   const today = format(new Date(), "yyyy-MM-dd");
   const habits = await getHabitsByDate(today);
+  const totalCompleted = await getTotalCompletedHabits();
 
   // Define default habits with icons
   const defaultHabits = [
@@ -69,13 +70,11 @@ export default async function HabitsPage() {
               <div className="bg-card border border-border rounded-lg p-4">
                 <div className="text-2xl font-bold text-primary">
                   {habits.filter((h) => h.status).length}
+                  <span className="text-gray-400"> /4</span>
                 </div>
                 <div className="text-sm text-muted-foreground">오늘 완료</div>
               </div>
-              <div className="bg-card border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-primary">{defaultHabits.length}</div>
-                <div className="text-sm text-muted-foreground">전체 습관</div>
-              </div>
+             
               <div className="bg-card border border-border rounded-lg p-4">
                 <div className="text-2xl font-bold text-primary">
                   {Math.round(
@@ -86,8 +85,8 @@ export default async function HabitsPage() {
                 <div className="text-sm text-muted-foreground">달성률</div>
               </div>
               <div className="bg-card border border-border rounded-lg p-4">
-                <div className="text-2xl font-bold text-primary">365</div>
-                <div className="text-sm text-muted-foreground">연속 일수</div>
+                <div className="text-2xl font-bold text-primary">{totalCompleted}</div>
+                <div className="text-sm text-muted-foreground">총 실천 습관</div>
               </div>
             </div>
           </section>
