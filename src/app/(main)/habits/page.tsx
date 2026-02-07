@@ -1,6 +1,7 @@
 import { getHabitsByDate } from "@/actions/habits";
 import { HabitCard } from "@/components/habits/HabitCard";
 import { format } from "date-fns";
+import { Dumbbell, BookOpen, Code, Brain } from "lucide-react";
 
 export const metadata = {
   title: "Habits - gaonhae.me",
@@ -13,8 +14,13 @@ export default async function HabitsPage() {
   const today = format(new Date(), "yyyy-MM-dd");
   const habits = await getHabitsByDate(today);
 
-  // Define default habits
-  const defaultHabits = ["운동", "독서", "코딩", "명상"];
+  // Define default habits with icons
+  const defaultHabits = [
+    { name: "운동", icon: <Dumbbell className="h-8 w-8" /> },
+    { name: "독서", icon: <BookOpen className="h-8 w-8" /> },
+    { name: "코딩", icon: <Code className="h-8 w-8" /> },
+    { name: "명상", icon: <Brain className="h-8 w-8" /> },
+  ];
 
   // Create habit map
   const habitMap = new Map(habits.map((h) => [h.habit_name, h.status]));
@@ -23,9 +29,9 @@ export default async function HabitsPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">습관 트래커</h1>
+          <h1 className="text-4xl font-bold mb-1">습관 트래커</h1>
           <p className="text-lg text-muted-foreground">
-            오늘의 습관을 체크하고 성장을 기록하세요
+            작은 습관이 만들어가는 성공의 복리를 직접 지켜보세요
           </p>
           <p className="text-sm text-muted-foreground mt-2">
             {format(new Date(), "yyyy년 MM월 dd일 (EEE)")}
@@ -34,14 +40,24 @@ export default async function HabitsPage() {
 
         <div className="space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold mb-4">오늘의 습관</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {defaultHabits.map((habitName) => (
+            <h2 className="text-2xl font-semibold flex items-center gap-3 mb-4">
+              오늘의 습관
+              <span
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-sm font-medium tracking-[0.1em]"
+                style={{ backgroundColor: '#74A12E' }}
+              >
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-[pulse-live_2s_ease-in-out_infinite]"></span>
+                live
+              </span>
+            </h2>
+            <div className="grid md:grid-cols-3 gap-4">
+              {defaultHabits.map((habit) => (
                 <HabitCard
-                  key={habitName}
-                  habitName={habitName}
+                  key={habit.name}
+                  habitName={habit.name}
                   date={today}
-                  initialStatus={habitMap.get(habitName) || false}
+                  initialStatus={habitMap.get(habit.name) || false}
+                  icon={habit.icon}
                 />
               ))}
             </div>

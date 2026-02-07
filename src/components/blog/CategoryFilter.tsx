@@ -7,7 +7,7 @@ export function CategoryFilter() {
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category") || "All";
 
-  const categories = ["All", "Dev", "Product", "Life"];
+  const categories = ["All", "Dev", "Think", "Experience"];
 
   const handleCategoryClick = (category: string) => {
     const params = new URLSearchParams(searchParams);

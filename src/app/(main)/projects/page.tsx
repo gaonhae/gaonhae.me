@@ -28,7 +28,7 @@ export default async function ProjectsPage() {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">프로젝트 : </h1>
           <p className="text-lg text-muted-foreground">
-            [명] 장기간에 걸쳐 지속적으로 노력을 들이고, 그로부터 깨달음을 얻을 수 있었던 모든 경험.
+            [명] 장기간에 걸쳐 노력을 들이고, 그로부터 성장의 씨앗과 깨달음을 얻을 수 있었던 모든 경험들.
           </p>
         </div>
 

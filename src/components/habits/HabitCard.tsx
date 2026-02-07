@@ -1,62 +1,37 @@
-"use client";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
-import { toggleHabit } from "@/actions/habits";
-import { useState } from "react";
-import type { Habit } from "@/types";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check } from "lucide-react";
 
 interface HabitCardProps {
   habitName: string;
   date: string;
   initialStatus: boolean;
-  onToggle?: () => void;
+  icon: React.ReactNode;
 }
 
-export function HabitCard({ habitName, date, initialStatus, onToggle }: HabitCardProps) {
-  const [status, setStatus] = useState(initialStatus);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleToggle = async () => {
-    setIsLoading(true);
-    try {
-      await toggleHabit(habitName, date);
-      setStatus(!status);
-      onToggle?.();
-    } catch (error) {
-      console.error("Error toggling habit:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export function HabitCard({ habitName, date, initialStatus, icon }: HabitCardProps) {
   return (
     <Card className="transition-all hover:shadow-md">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center justify-between">
-          <span>{habitName}</span>
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              status
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground"
-            }`}
-          >
-            {status ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-4">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            {/* 기본 아이콘 */}
+            <div className="w-16 h-16 rounded-full flex items-center justify-center bg-muted text-muted-foreground">
+              {icon}
+            </div>
+
+            {/* 완료 시 오버레이 */}
+            {initialStatus && (
+              <div
+                className="absolute inset-0 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: 'rgba(116, 161, 46, 0.5)' }}
+              >
+                <Check className="h-8 w-8 text-white" />
+              </div>
+            )}
           </div>
+          <span>{habitName}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Button
-          onClick={handleToggle}
-          disabled={isLoading}
-          variant={status ? "outline" : "default"}
-          className="w-full"
-        >
-          {isLoading ? "처리중..." : status ? "완료 취소" : "완료 체크"}
-        </Button>
-      </CardContent>
     </Card>
   );
 }
