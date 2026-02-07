@@ -17,9 +17,9 @@ export default function BlogPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">블로그</h1>
+          <h1 className="text-4xl font-bold mb-4">블로그 : </h1>
           <p className="text-lg text-muted-foreground">
-            개발, 기획, 그리고 성장에 대한 생각들을 기록합니다
+            [명] 진지하게, 또 정성스럽게 써 내려간 생각들
           </p>
         </div>
 
