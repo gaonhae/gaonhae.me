@@ -1,7 +1,9 @@
-import { getHabitsByDate, getTotalCompletedHabits, getAllHabitStreaks, getLongestStreakOverall } from "@/actions/habits";
+import { getHabitsByDate, getTotalCompletedHabits, getAllHabitStreaks, getLongestStreakOverall, getAggregatedHabitData, getIndividualHabitGridData } from "@/actions/habits";
 import { HabitCard } from "@/components/habits/HabitCard";
-import { format } from "date-fns";
+import { HabitVisualization } from "@/components/habits/HabitVisualization";
+import { format, subDays } from "date-fns";
 import { Dumbbell, BookOpen, Code, Brain } from "lucide-react";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Habits - gaonhae.me",
@@ -31,6 +33,21 @@ export default async function HabitsPage() {
 
   // Fetch longest streak across all habits
   const longestStreak = await getLongestStreakOverall();
+
+  // Fetch 6 months of data for visualization
+  const endDate = format(new Date(), "yyyy-MM-dd");
+  const startDate = format(subDays(new Date(), 180), "yyyy-MM-dd");
+
+  // Fetch aggregated data
+  const aggregatedData = await getAggregatedHabitData(startDate, endDate);
+
+  // Fetch individual habit data
+  const individualData = {
+    운동: await getIndividualHabitGridData("운동", startDate, endDate),
+    독서: await getIndividualHabitGridData("독서", startDate, endDate),
+    코딩: await getIndividualHabitGridData("코딩", startDate, endDate),
+    명상: await getIndividualHabitGridData("명상", startDate, endDate),
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -108,9 +125,18 @@ export default async function HabitsPage() {
 
           <section className="border-t border-border pt-8">
             <h2 className="text-2xl font-semibold mb-4">시각화</h2>
-            <p className="text-muted-foreground">
-              깃허브 잔디 스타일 시각화와 차트는 다음 단계에서 구현됩니다.
-            </p>
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-muted-foreground">로딩 중...</div>
+                </div>
+              }
+            >
+              <HabitVisualization
+                aggregatedData={aggregatedData}
+                individualData={individualData}
+              />
+            </Suspense>
           </section>
         </div>
       </div>

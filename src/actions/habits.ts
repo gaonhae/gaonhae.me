@@ -338,3 +338,47 @@ export async function getLongestStreakOverall(): Promise<number> {
 
   return Math.max(...streaks, 0);
 }
+
+// Get aggregated habit data for visualization (date → total completed habits count)
+export const getAggregatedHabitData = cache(async (
+  startDate: string,
+  endDate: string
+): Promise<Record<string, number>> => {
+  const habits = await getHabits(startDate, endDate);
+
+  // Group by date and count completed habits
+  const aggregated: Record<string, number> = {};
+
+  for (const habit of habits) {
+    if (!habit.date) continue;
+
+    if (!aggregated[habit.date]) {
+      aggregated[habit.date] = 0;
+    }
+
+    if (habit.status) {
+      aggregated[habit.date] += 1;
+    }
+  }
+
+  return aggregated;
+});
+
+// Get individual habit data for visualization (date → binary completion)
+export const getIndividualHabitGridData = cache(async (
+  habitName: string,
+  startDate: string,
+  endDate: string
+): Promise<Record<string, number>> => {
+  const habits = await getHabitsByName(habitName, startDate, endDate);
+
+  // Transform to date → binary (0 or 1)
+  const gridData: Record<string, number> = {};
+
+  for (const habit of habits) {
+    if (!habit.date) continue;
+    gridData[habit.date] = habit.status ? 1 : 0;
+  }
+
+  return gridData;
+});

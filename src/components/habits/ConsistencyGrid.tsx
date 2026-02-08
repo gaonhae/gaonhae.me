@@ -4,11 +4,12 @@ import { useState } from "react";
 import { format, subDays, startOfWeek, addDays } from "date-fns";
 
 interface ConsistencyGridProps {
-  data: Record<string, number>; // date -> count (0-4+)
+  data: Record<string, number>; // date -> count (0-4+ for aggregated, 0-1 for individual)
   weeks?: number;
+  mode?: "aggregated" | "individual"; // aggregated: 0-4 scale, individual: 0-1 binary
 }
 
-export function ConsistencyGrid({ data, weeks = 15 }: ConsistencyGridProps) {
+export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated" }: ConsistencyGridProps) {
   const [hoveredCell, setHoveredCell] = useState<{
     date: string;
     count: number;
@@ -39,75 +40,90 @@ export function ConsistencyGrid({ data, weeks = 15 }: ConsistencyGridProps) {
     }
   }
 
-  // Get color class based on count
+  // Get color class based on count and mode
   const getColorClass = (count: number) => {
-    if (count === 0) return "bg-muted";
-    if (count === 1) return "bg-primary/20";
-    if (count === 2) return "bg-primary/40";
-    if (count === 3) return "bg-primary/70";
-    return "bg-primary";
+    if (mode === "individual") {
+      // Binary mode: 0 or 1
+      if (count === 0) return "bg-muted";
+      return "bg-primary";
+    } else {
+      // Aggregated mode: 0-4 scale
+      if (count === 0) return "bg-muted";
+      if (count === 1) return "bg-primary/20";
+      if (count === 2) return "bg-primary/40";
+      if (count === 3) return "bg-primary/70";
+      return "bg-primary";
+    }
   };
 
   return (
-    <div className="relative">
-      <div className="inline-block">
-        {/* Day labels */}
-        <div className="flex mb-2 gap-2">
-          {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
-            <div key={i} className="w-[54px] h-9 text-md text-muted-foreground text-center flex items-center justify-center">
-              {day}
-            </div>
-          ))}
-        </div>
-
-        {/* Grid - Weeks arranged horizontally */}
-        <div className="flex gap-2">
-          {gridData.map((week, weekIndex) => (
-            <div key={weekIndex} className="flex flex-col gap-2">
-              {week.map((cell, dayIndex) => {
-                const dateStr = format(cell.date, "yyyy-MM-dd");
-                const isFuture = cell.date > endDate;
-
-                return (
-                  <div
-                    key={`${weekIndex}-${dayIndex}`}
-                    className={`w-[54px] h-[54px] rounded-sm transition-all cursor-pointer ${
-                      isFuture
-                        ? "bg-muted/30 opacity-30"
-                        : getColorClass(cell.count)
-                    } hover:ring-2 hover:ring-primary hover:ring-offset-1`}
-                    onMouseEnter={(e) => {
-                      if (!isFuture) {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        setHoveredCell({
-                          date: dateStr,
-                          count: cell.count,
-                          x: rect.left,
-                          y: rect.top,
-                        });
-                      }
-                    }}
-                    onMouseLeave={() => setHoveredCell(null)}
-                    title={`${dateStr}: ${cell.count}개 완료`}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        {/* Legend */}
-        <div className="flex items-center justify-center gap-2 mt-10 text-xs text-muted-foreground">
-          <span>적음</span>
-          <div className="flex gap-1">
-            <div className="w-9 h-[27px] rounded-sm bg-muted" />
-            <div className="w-9 h-[27px] rounded-sm bg-primary/20" />
-            <div className="w-9 h-[27px] rounded-sm bg-primary/40" />
-            <div className="w-9 h-[27px] rounded-sm bg-primary/70" />
-            <div className="w-9 h-[27px] rounded-sm bg-primary" />
+    <div className="relative w-full">
+      {/* Horizontal scroll container */}
+      <div className="overflow-x-auto pb-4">
+        <div className="inline-flex">
+          {/* Day labels - 세로로 배치 */}
+          <div className="flex flex-col gap-1 mr-2 justify-start pt-0">
+            {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
+              <div
+                key={i}
+                className="h-[27px] md:h-[27px] sm:h-[18px] w-9 text-xs text-muted-foreground flex items-center justify-start"
+              >
+                {day}
+              </div>
+            ))}
           </div>
-          <span>많음</span>
+
+          {/* Grid - 7행(일~토) × 52주(열) */}
+          <div className="flex flex-col gap-1">
+            {gridData.map((dayRow, dayIndex) => (
+              <div key={dayIndex} className="flex gap-1">
+                {dayRow.map((cell, weekIndex) => {
+                  const dateStr = format(cell.date, "yyyy-MM-dd");
+                  const isFuture = cell.date > endDate;
+
+                  return (
+                    <div
+                      key={`${dayIndex}-${weekIndex}`}
+                      className={`w-[27px] h-[27px] md:w-[27px] md:h-[27px] sm:w-[18px] sm:h-[18px] rounded-sm transition-all cursor-pointer ${
+                        isFuture
+                          ? "bg-muted/30 opacity-30"
+                          : getColorClass(cell.count)
+                      } hover:ring-2 hover:ring-primary hover:ring-offset-1`}
+                      onMouseEnter={(e) => {
+                        if (!isFuture) {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setHoveredCell({
+                            date: dateStr,
+                            count: cell.count,
+                            x: rect.left,
+                            y: rect.top,
+                          });
+                        }
+                      }}
+                      onMouseLeave={() => setHoveredCell(null)}
+                      title={`${dateStr}: ${mode === "individual" ? (cell.count ? "완료" : "미완료") : `${cell.count}개 완료`}`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Legend - only show for aggregated mode */}
+        {mode === "aggregated" && (
+          <div className="flex items-center justify-center gap-2 mt-6 text-xs text-muted-foreground">
+            <span>적음</span>
+            <div className="flex gap-1">
+              <div className="w-[18px] h-[18px] rounded-sm bg-muted" />
+              <div className="w-[18px] h-[18px] rounded-sm bg-primary/20" />
+              <div className="w-[18px] h-[18px] rounded-sm bg-primary/40" />
+              <div className="w-[18px] h-[18px] rounded-sm bg-primary/70" />
+              <div className="w-[18px] h-[18px] rounded-sm bg-primary" />
+            </div>
+            <span>많음</span>
+          </div>
+        )}
       </div>
 
       {/* Tooltip */}
@@ -121,7 +137,11 @@ export function ConsistencyGrid({ data, weeks = 15 }: ConsistencyGridProps) {
           }}
         >
           <div className="font-semibold">{hoveredCell.date}</div>
-          <div className="text-muted-foreground">{hoveredCell.count}개 완료</div>
+          <div className="text-muted-foreground">
+            {mode === "individual"
+              ? (hoveredCell.count ? "완료" : "미완료")
+              : `${hoveredCell.count}개 완료`}
+          </div>
         </div>
       )}
     </div>
