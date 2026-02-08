@@ -41,7 +41,7 @@ export function HeroSection() {
 
         {/* Right: Image */}
         <div className="w-full max-w-[285px] lg:max-w-none lg:flex-[0.75]">
-          <div className="aspect-3/4 rounded-[2rem] shadow-2xl overflow-hidden relative border border-primary/20">
+          <div className="aspect-3/4 rounded-[2rem] shadow-2xl overflow-hidden relative border border-primary/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
             <Image
               src="/profile.jpg"
               alt="김태양 프로필 사진"

@@ -17,7 +17,30 @@ export default function HomePage() {
       <FeaturedProjects />
 
       {/* About Section */}
-      <AboutSection />
+      <Suspense
+        fallback={
+          <section className="w-full max-w-[1200px] px-6 py-24 flex flex-col items-center text-center">
+            <div className="max-w-[800px] space-y-8 animate-pulse">
+              <div className="h-12 bg-muted rounded w-3/4 mx-auto mb-20" />
+              <div className="h-6 bg-muted rounded w-full mb-2" />
+              <div className="h-6 bg-muted rounded w-full mb-2" />
+              <div className="h-6 bg-muted rounded w-full mb-2" />
+              <div className="h-6 bg-muted rounded w-2/3 mx-auto" />
+
+              <div className="flex flex-wrap justify-center gap-10 pt-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <div className="h-9 w-16 bg-muted rounded" />
+                    <div className="h-4 w-20 bg-muted rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        }
+      >
+        <AboutSection />
+      </Suspense>
 
       {/* Routine Widget */}
       <section className="w-full border-t border-border bg-muted/30 py-12">

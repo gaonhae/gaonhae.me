@@ -196,6 +196,25 @@ export async function getTotalCompletedHabits(): Promise<number> {
   return count || 0;
 }
 
+// Get count of unique habit names (distinct habits being tracked)
+export async function getUniqueHabitsCount(): Promise<number> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("habits")
+    .select("habit_name")
+    .order("habit_name");
+
+  if (error) {
+    console.error("Error fetching unique habits count:", error);
+    return 0;
+  }
+
+  // Count unique habit names using Set
+  const uniqueHabits = new Set(data.map((h) => h.habit_name));
+  return uniqueHabits.size;
+}
+
 // Helper function to calculate streak from habit data
 function calculateStreak(habits: { date: string; status: boolean }[]): number {
   const today = format(new Date(), "yyyy-MM-dd");

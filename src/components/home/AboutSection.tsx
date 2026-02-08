@@ -1,8 +1,36 @@
-export function AboutSection() {
+import { getProjects } from "@/actions/projects";
+import { getUniqueHabitsCount } from "@/actions/habits";
+import { getAllMDXContent } from "@/lib/mdx/mdx-utils";
+
+export async function AboutSection() {
+  // Parallel fetch for optimal performance
+  const [projects, publishedPosts, uniqueHabits] = await Promise.all([
+    getProjects().catch((err) => {
+      console.error("Failed to fetch projects:", err);
+      return [];
+    }),
+    Promise.resolve(
+      getAllMDXContent("blog").filter((p) => p.frontMatter.published)
+    ),
+    getUniqueHabitsCount().catch((err) => {
+      console.error("Failed to fetch unique habits:", err);
+      return 0;
+    }),
+  ]);
+
   const stats = [
-    { value: "4+", label: "프로젝트" },
-    { value: "20+", label: "블로그 포스트" },
-    { value: "365", label: "일일 루틴" },
+    {
+      value: `${projects.length}+`,
+      label: "프로젝트",
+    },
+    {
+      value: `${publishedPosts.length}+`,
+      label: "블로그 포스트",
+    },
+    {
+      value: `${uniqueHabits}`,
+      label: "일일 루틴",
+    },
   ];
 
   return (
