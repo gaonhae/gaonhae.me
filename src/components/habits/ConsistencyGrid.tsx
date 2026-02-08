@@ -7,9 +7,12 @@ interface ConsistencyGridProps {
   data: Record<string, number>; // date -> count (0-4+ for aggregated, 0-1 for individual)
   weeks?: number;
   mode?: "aggregated" | "individual"; // aggregated: 0-4 scale, individual: 0-1 binary
+  layout?: "vertical" | "horizontal"; // vertical: 7 rows × N weeks, horizontal: N rows × 7 cols
+  cellSize?: "default" | "medium" | "large"; // default: 27px, medium: 40px, large: 54px
+  showWeekdayLabels?: boolean; // Show weekday labels (default: true)
 }
 
-export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated" }: ConsistencyGridProps) {
+export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated", layout = "vertical", cellSize = "default", showWeekdayLabels = true }: ConsistencyGridProps) {
   const [hoveredCell, setHoveredCell] = useState<{
     date: string;
     count: number;
@@ -22,21 +25,38 @@ export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated" }: Consi
   const startDate = subDays(endDate, weeks * 7);
   const firstDay = addDays(startOfWeek(startDate, { weekStartsOn: 0 }), 7); // Sunday + 7 days to shift forward
 
-  // Generate grid data (Day-based structure - 7 columns for days)
+  // Generate grid data
   const gridData: Array<Array<{ date: Date; count: number }>> = [];
 
-  // Initialize 7 rows (one for each day of the week)
-  for (let day = 0; day < 7; day++) {
-    gridData.push([]);
-  }
-
-  // Populate each day row with week cells
-  for (let week = 0; week < weeks; week++) {
+  if (layout === "horizontal") {
+    // Horizontal layout: N rows (weeks) × 7 columns (days)
+    // Initialize N rows (one for each week)
+    for (let week = 0; week < weeks; week++) {
+      gridData.push([]);
+    }
+    // Populate each week row with 7 day cells
+    for (let week = 0; week < weeks; week++) {
+      for (let day = 0; day < 7; day++) {
+        const date = addDays(firstDay, week * 7 + day);
+        const dateStr = format(date, "yyyy-MM-dd");
+        const count = data[dateStr] || 0;
+        gridData[week].push({ date, count });
+      }
+    }
+  } else {
+    // Vertical layout: 7 rows (days) × N columns (weeks)
+    // Initialize 7 rows (one for each day of the week)
     for (let day = 0; day < 7; day++) {
-      const date = addDays(firstDay, week * 7 + day);
-      const dateStr = format(date, "yyyy-MM-dd");
-      const count = data[dateStr] || 0;
-      gridData[day].push({ date, count }); // Add cell to day row
+      gridData.push([]);
+    }
+    // Populate each day row with week cells
+    for (let week = 0; week < weeks; week++) {
+      for (let day = 0; day < 7; day++) {
+        const date = addDays(firstDay, week * 7 + day);
+        const dateStr = format(date, "yyyy-MM-dd");
+        const count = data[dateStr] || 0;
+        gridData[day].push({ date, count });
+      }
     }
   }
 
@@ -56,35 +76,87 @@ export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated" }: Consi
     }
   };
 
+  // Get cell size classes based on cellSize prop
+  const getCellSizeClasses = () => {
+    if (cellSize === "large") {
+      return "w-[54px] h-[54px] md:w-[54px] md:h-[54px] sm:w-[36px] sm:h-[36px]";
+    }
+    if (cellSize === "medium") {
+      return "w-[40px] h-[40px] md:w-[40px] md:h-[40px] sm:w-[27px] sm:h-[27px]";
+    }
+    return "w-[27px] h-[27px] md:w-[27px] md:h-[27px] sm:w-[18px] sm:h-[18px]";
+  };
+
+  const getLabelSizeClasses = () => {
+    if (cellSize === "large") {
+      return {
+        width: "w-[54px] md:w-[54px] sm:w-[36px]",
+        height: "h-[54px] md:h-[54px] sm:h-[36px]",
+      };
+    }
+    if (cellSize === "medium") {
+      return {
+        width: "w-[40px] md:w-[40px] sm:w-[27px]",
+        height: "h-[40px] md:h-[40px] sm:h-[27px]",
+      };
+    }
+    return {
+      width: "w-[27px] md:w-[27px] sm:w-[18px]",
+      height: "h-[27px] md:h-[27px] sm:h-[18px]",
+    };
+  };
+
   return (
     <div className="relative w-full">
       {/* Horizontal scroll container */}
       <div className="overflow-x-auto pb-4">
-        <div className="inline-flex">
-          {/* Day labels - 세로로 배치 */}
-          <div className="flex flex-col gap-1 mr-2 justify-start pt-0">
-            {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
-              <div
-                key={i}
-                className="h-[27px] md:h-[27px] sm:h-[18px] w-9 text-xs text-muted-foreground flex items-center justify-start"
-              >
-                {day}
+        <div className="inline-flex flex-col" >
+          {/* Day labels - conditional rendering based on layout */}
+          {showWeekdayLabels && layout === "horizontal" && (
+            // Horizontal layout: labels on top
+            <div className="flex gap-1 mb-2">
+              <div className="w-9 mr-2" /> {/* Spacer to align with vertical layout label area */}
+              <div className="flex gap-1">
+                {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
+                  <div
+                    key={i}
+                    className={`${getLabelSizeClasses().width} text-xs text-muted-foreground text-center`}
+                  >
+                    {day}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
 
-          {/* Grid - 7행(일~토) × 52주(열) */}
-          <div className="flex flex-col gap-1">
-            {gridData.map((dayRow, dayIndex) => (
-              <div key={dayIndex} className="flex gap-1">
-                {dayRow.map((cell, weekIndex) => {
+          {/* Grid container with side labels for vertical layout */}
+          <div className="inline-flex">
+            {showWeekdayLabels && layout === "vertical" && (
+              // Vertical layout: labels on left
+              <div className="flex flex-col gap-1 mr-2 justify-start pt-0">
+                {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
+                  <div
+                    key={i}
+                    className={`${getLabelSizeClasses().height} w-9 text-xs text-muted-foreground flex items-center justify-start`}
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Grid */}
+            <div className="ml-1 flex flex-col gap-1">
+            {gridData.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex gap-1">
+                {row.map((cell, colIndex) => {
                   const dateStr = format(cell.date, "yyyy-MM-dd");
                   const isFuture = cell.date > endDate;
 
                   return (
                     <div
-                      key={`${dayIndex}-${weekIndex}`}
-                      className={`w-[27px] h-[27px] md:w-[27px] md:h-[27px] sm:w-[18px] sm:h-[18px] rounded-sm transition-all cursor-pointer ${
+                      key={`${rowIndex}-${colIndex}`}
+                      className={`${getCellSizeClasses()} rounded-sm transition-all cursor-pointer ${
                         isFuture
                           ? "bg-muted/30 opacity-30"
                           : getColorClass(cell.count)
@@ -107,6 +179,7 @@ export function ConsistencyGrid({ data, weeks = 26, mode = "aggregated" }: Consi
                 })}
               </div>
             ))}
+            </div>
           </div>
         </div>
 

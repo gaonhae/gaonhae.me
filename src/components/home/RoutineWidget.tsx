@@ -56,7 +56,7 @@ export async function RoutineWidget() {
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <Card>
+    <Card className="w-fit mx-auto">
       <CardHeader className="gap-0">
         <CardTitle className="text-xl">My Routinary Life</CardTitle>
         <CardDescription className="pb-10 border-b-3 border-gray-100">Today : {format(new Date(), "yyyy-MM-dd (EEE)")}</CardDescription>
@@ -64,17 +64,17 @@ export async function RoutineWidget() {
       <CardContent>
         <div className="flex gap-6">
           {/* 왼쪽: 지난 2주 활동 */}
-          <div className="flex-[2] w-full">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">
+          <div className="mr-2">
+            <h3 className="ml-1 text-sm font-medium text-muted-foreground mb-3">
               지난 2주 활동
             </h3>
-            <div className="w-full">
-              <ConsistencyGrid data={gridData} weeks={2} />
+            <div>
+              <ConsistencyGrid data={gridData} weeks={2} layout="horizontal" cellSize="medium" showWeekdayLabels={false} />
             </div>
           </div>
 
           {/* 오른쪽: 오늘의 루틴 */}
-          <div className="flex-1 space-y-4">
+          <div className="space-y-4 min-w-[200px] ml-2">
             {/* Progress Bar */}
             <div className="space-y-2 mb-10">
               <div className="flex justify-between text-sm">
